@@ -1,5 +1,6 @@
 package com.example.socialmedia.mapper;
 
+import com.example.socialmedia.dto.request.UpdateUserRequest;
 import com.example.socialmedia.dto.request.UserRegisterRequest;
 import com.example.socialmedia.dto.response.UserResponse;
 import com.example.socialmedia.entity.User;
@@ -14,6 +15,11 @@ public class UserMapper
 {
     private final ModelMapper modelMapper;
     private final PasswordEncoder passwordEncoder;
+
+    public void map (UpdateUserRequest source, User target)
+    {
+        modelMapper.map(source, target);
+    }
 
     public User map (UserRegisterRequest source)
     {

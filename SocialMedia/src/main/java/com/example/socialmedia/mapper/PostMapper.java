@@ -2,7 +2,9 @@ package com.example.socialmedia.mapper;
 
 import com.example.socialmedia.dto.request.UpdateUserRequest;
 import com.example.socialmedia.dto.request.UserRegisterRequest;
+import com.example.socialmedia.dto.response.PostResponse;
 import com.example.socialmedia.dto.response.UserResponse;
+import com.example.socialmedia.entity.Post;
 import com.example.socialmedia.entity.User;
 import lombok.RequiredArgsConstructor;
 import org.modelmapper.ModelMapper;
@@ -11,23 +13,17 @@ import org.springframework.stereotype.Component;
 
 @Component
 @RequiredArgsConstructor
-public class UserMapper {
+public class PostMapper {
+
     private final ModelMapper modelMapper;
     private final PasswordEncoder passwordEncoder;
 
-    public void map(UpdateUserRequest source, User target) {
+    public void map(UpdateUserRequest source, Post target) {
         modelMapper.map(source, target);
     }
 
-    public User map(UserRegisterRequest source) {
-        User target = modelMapper.map(source, User.class);
-        String passwordHash = passwordEncoder.encode(target.getPassword());
-        target.setPassword(passwordHash);
 
-        return target;
-    }
-
-    public UserResponse map(User source) {
-        return modelMapper.map(source, UserResponse.class);
+    public PostResponse map(Post source) {
+        return modelMapper.map(source, PostResponse.class);
     }
 }

@@ -1,9 +1,9 @@
 spring:
   datasource:
-    url: jdbc:mysql://localhost:3306/social_media
-    username: root
-    password: dunay
-    driver-class-name: com.mysql.cj.jdbc.Driver
+    url: jdbc:postgresql://localhost:5432/social_media
+    username: postgres
+    password: 123456
+    driver-class-name: org.postgresql.Driver
   jpa:
     hibernate:
       ddl-auto: update

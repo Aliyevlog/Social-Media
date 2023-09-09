@@ -24,6 +24,6 @@ public class Post {
     @ManyToOne
     private User user;
 
-    //TODO Create Post repository
+    //TODO Create Post repository -> Done
     //TODO Create Service layer: add, update, get by id, remove
 }

@@ -4,13 +4,22 @@ spring:
     username: postgres
     password: 123456
     driver-class-name: org.postgresql.Driver
-  #  liquibase:
-  #    change-log: classpath:/db/changelog/changelog-master.xml
-  #    database-change-log-table: social_media_log
-  #    database-change-log-lock-table: social_media_log_lock
-  jpa:
-    hibernate:
-      ddl-auto: update
+  liquibase:
+    change-log: classpath:/db/changelog/changelog-master.xml
+    database-change-log-table: social_media_log
+    database-change-log-lock-table: social_media_log_lock
+
+  mail:
+    host: smtp.gmail.com
+    port: 587
+    username: myfriends.social.media@gmail.com
+    password: dfabimeqojqfsxoj
+    properties:
+      mail:
+        smtp:
+          auth: true
+          starttls:
+            enable: true
 
 jwt:
   expireAt: 86400000
@@ -18,4 +27,4 @@ jwt:
 
 
 server:
-  port: 8086
+  port: 8087

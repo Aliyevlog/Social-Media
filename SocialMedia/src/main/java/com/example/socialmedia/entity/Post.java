@@ -23,7 +23,4 @@ public class Post {
     @JoinColumn(name = "user_id", referencedColumnName = "id")
     @ManyToOne
     private User user;
-
-    //TODO Create Post repository -> Done
-    //TODO Create Service layer: add, update, get by id, remove
 }

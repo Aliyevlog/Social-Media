@@ -1,6 +1,6 @@
 package com.example.socialmedia.enums;
 
-public enum Gender
+public enum EGender
 {
     MALE, FEMALE
 }

@@ -4,6 +4,10 @@ spring:
     username: postgres
     password: 123456
     driver-class-name: org.postgresql.Driver
+  #  liquibase:
+  #    change-log: classpath:/db/changelog/changelog-master.xml
+  #    database-change-log-table: social_media_log
+  #    database-change-log-lock-table: social_media_log_lock
   jpa:
     hibernate:
       ddl-auto: update
@@ -11,3 +15,7 @@ spring:
 jwt:
   expireAt: 86400000
   secretKey: HHwuNoEmnzoM51UiM13kM1aUb4jBrkrPiINKGD4QjbW/C9F9MuwsHEfIPPVpxAUn
+
+
+server:
+  port: 8086

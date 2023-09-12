@@ -1,12 +1,15 @@
 package com.example.socialmedia.entity;
 
-import com.example.socialmedia.enums.Gender;
+import com.example.socialmedia.enums.EGender;
+import com.example.socialmedia.enums.ERole;
 import jakarta.persistence.*;
 import lombok.*;
 import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
 import java.util.Collection;
+import java.util.Collections;
 import java.util.Date;
 
 @Entity
@@ -16,8 +19,7 @@ import java.util.Date;
 @NoArgsConstructor
 @AllArgsConstructor
 @ToString
-public class User implements UserDetails
-{
+public class User implements UserDetails {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
@@ -27,7 +29,7 @@ public class User implements UserDetails
     private Integer age;
 
     @Enumerated(EnumType.STRING)
-    private Gender gender;
+    private EGender gender;
 
     private String address;
     private String phone;
@@ -36,45 +38,45 @@ public class User implements UserDetails
     private String password;
     private Date createdAt;
 
+    @JoinColumn(name = "picture_id", referencedColumnName = "id")
+    @OneToOne
+    private File picture;
+
+    @Enumerated(EnumType.STRING)
+    private ERole role;
+
     @Override
-    public Collection<? extends GrantedAuthority> getAuthorities ()
-    {
-        return null;
+    public Collection<? extends GrantedAuthority> getAuthorities() {
+        return Collections.singleton(new SimpleGrantedAuthority(role.name()));
     }
 
     @Override
-    public String getPassword ()
-    {
+    public String getPassword() {
         return this.password;
     }
 
     @Override
-    public String getUsername ()
-    {
+    public String getUsername() {
         return this.username;
     }
 
     @Override
-    public boolean isAccountNonExpired ()
-    {
+    public boolean isAccountNonExpired() {
         return true;
     }
 
     @Override
-    public boolean isAccountNonLocked ()
-    {
+    public boolean isAccountNonLocked() {
         return true;
     }
 
     @Override
-    public boolean isCredentialsNonExpired ()
-    {
+    public boolean isCredentialsNonExpired() {
         return true;
     }
 
     @Override
-    public boolean isEnabled ()
-    {
+    public boolean isEnabled() {
         return true;
     }
 }

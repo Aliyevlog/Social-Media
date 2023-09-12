@@ -1,7 +1,7 @@
 package com.example.socialmedia.dto.response;
 
 
-import com.example.socialmedia.enums.Gender;
+import com.example.socialmedia.enums.EGender;
 import lombok.Data;
 
 import java.util.Date;
@@ -13,7 +13,7 @@ public class UserResponse
     private String name;
     private String surname;
     private Integer age;
-    private Gender gender;
+    private EGender gender;
     private String address;
     private String phone;
     private String email;

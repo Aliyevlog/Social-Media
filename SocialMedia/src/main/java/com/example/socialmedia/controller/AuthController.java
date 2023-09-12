@@ -24,15 +24,14 @@ import org.springframework.web.bind.annotation.RestController;
 @RestController
 @RequestMapping("/auth")
 @RequiredArgsConstructor
-public class AuthController
-{
+public class AuthController {
     private final UserService userService;
     private final UserMapper userMapper;
     private final AuthenticationManager authenticationManager;
     private final JwtService jwtService;
 
     @PostMapping("/register")
-    public ResponseEntity<BaseResponse<UserResponse>> register (@RequestBody UserRegisterRequest request) throws AlreadyExistException {
+    public ResponseEntity<BaseResponse<UserResponse>> register(@RequestBody UserRegisterRequest request) throws AlreadyExistException {
         User user = userMapper.map(request);
         user = userService.register(user);
         UserResponse userResponse = userMapper.map(user);
@@ -41,7 +40,7 @@ public class AuthController
     }
 
     @PostMapping("/login")
-    public ResponseEntity<BaseResponse<JwtResponse>> login (@RequestBody UserLoginRequest request) throws NotFoundException {
+    public ResponseEntity<BaseResponse<JwtResponse>> login(@RequestBody UserLoginRequest request) throws NotFoundException {
         User user = userService.getByUsername(request.getUsername());
 
         authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(
@@ -49,7 +48,6 @@ public class AuthController
 
         JwtResponse jwtResponse = JwtResponse.builder()
                 .accessToken(jwtService.generateAccessToken(user))
-                .refreshToken("refresh token")
                 .build();
 
         return ResponseEntity.ok(BaseResponse.success(jwtResponse));

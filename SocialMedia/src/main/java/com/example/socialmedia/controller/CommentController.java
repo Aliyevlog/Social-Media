@@ -52,7 +52,7 @@ public class CommentController {
     @PatchMapping("/{commentId}")
     public ResponseEntity<BaseResponse<CommentResponse>> update(@PathVariable Long commentId,
                                                                 @RequestBody UpdateCommentRequest request)
-            throws NotFoundException, IllegalOperationException {
+            throws NotFoundException, IllegalOperationExgitception {
         Comment comment = commentService.getById(commentId);
         commentMapper.map(request, comment);
         comment = commentService.update(comment);

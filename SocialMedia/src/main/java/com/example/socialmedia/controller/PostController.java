@@ -32,7 +32,7 @@ public class PostController {
     private final UserService userService;
     private final MessageSource messageSource;
 
-    @GetMapping("/{id}")
+    @GetMapping("/getById/{id}")
     public ResponseEntity<BaseResponse<PostResponse>> getPostById(@PathVariable Long id)
             throws NotFoundException {
 

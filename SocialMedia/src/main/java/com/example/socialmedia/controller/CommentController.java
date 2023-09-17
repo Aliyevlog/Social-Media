@@ -36,7 +36,8 @@ public class CommentController {
 
     @PostMapping("/{postId}")
     public ResponseEntity<BaseResponse<CommentResponse>> add(@PathVariable Long postId,
-                                                             @RequestBody CreateCommentRequest request) throws NotFoundException {
+                                                             @RequestBody CreateCommentRequest request)
+            throws NotFoundException {
         Post post = postService.getByPostId(postId);
         User user = userService.getByUsername(securityConfig.getLoggedInUsername());
         Comment comment = commentMapper.map(request);
@@ -52,7 +53,7 @@ public class CommentController {
     @PatchMapping("/{commentId}")
     public ResponseEntity<BaseResponse<CommentResponse>> update(@PathVariable Long commentId,
                                                                 @RequestBody UpdateCommentRequest request)
-            throws NotFoundException, IllegalOperationExgitception {
+            throws NotFoundException, IllegalOperationException {
         Comment comment = commentService.getById(commentId);
         commentMapper.map(request, comment);
         comment = commentService.update(comment);

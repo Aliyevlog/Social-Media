@@ -5,6 +5,7 @@ import com.example.socialmedia.dto.request.UpdatePostRequest;
 import com.example.socialmedia.dto.response.PageResponse;
 import com.example.socialmedia.dto.response.PostResponse;
 import com.example.socialmedia.entity.Post;
+import com.example.socialmedia.service.LikeService;
 import lombok.RequiredArgsConstructor;
 import org.modelmapper.ModelMapper;
 import org.springframework.data.domain.Page;
@@ -18,6 +19,7 @@ import java.util.List;
 public class PostMapper {
 
     private final ModelMapper modelMapper;
+    private final LikeService likeService;
 
     public void map(UpdatePostRequest source, Post target) {
         modelMapper.map(source, target);
@@ -27,6 +29,11 @@ public class PostMapper {
         PostResponse target = modelMapper.map(source, PostResponse.class);
         String fullName = source.getUser().getName() + " " + source.getUser().getSurname();
         target.setFullName(fullName);
+
+        Long likeCount = likeService.countLikeByPost(source.getId());
+        Long dislikeCount = likeService.countDislikeByPost(source.getId());
+        target.setLikeCount(likeCount);
+        target.setDislikeCount(dislikeCount);
 
         return target;
     }

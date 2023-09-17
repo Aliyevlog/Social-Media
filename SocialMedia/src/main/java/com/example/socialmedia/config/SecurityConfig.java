@@ -36,9 +36,7 @@ public class SecurityConfig {
                         httpSecuritySessionManagementConfigurer.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .authorizeHttpRequests(auth ->
                         auth.requestMatchers("/auth/**",
-                                "/user/profilePhoto/**",
-                                "/v3/api-docs/**",
-                                "/swagger-ui/**").permitAll())
+                                "/user/profilePhoto/**").permitAll())
                 .authorizeHttpRequests(auth ->
                         auth.anyRequest().authenticated())
                 .addFilterBefore(jwtAuthorizationFilter, UsernamePasswordAuthenticationFilter.class)

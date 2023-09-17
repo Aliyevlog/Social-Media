@@ -5,7 +5,6 @@ import com.example.socialmedia.dto.request.UserRegisterRequest;
 import com.example.socialmedia.dto.response.PageResponse;
 import com.example.socialmedia.dto.response.UserResponse;
 import com.example.socialmedia.entity.User;
-import com.example.socialmedia.enums.ERole;
 import lombok.RequiredArgsConstructor;
 import org.modelmapper.ModelMapper;
 import org.springframework.data.domain.Page;
@@ -29,7 +28,6 @@ public class UserMapper {
         User target = modelMapper.map(source, User.class);
         String passwordHash = passwordEncoder.encode(target.getPassword());
         target.setPassword(passwordHash);
-        target.setRole(ERole.USER);
 
         return target;
     }

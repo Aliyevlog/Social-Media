@@ -13,4 +13,6 @@ public class PostResponse {
     @JsonFormat(pattern = "yyyy-MM-dd hh:mm:ss")
     private Date createdAt;
     private String fullName;
+    private Long likeCount;
+    private Long dislikeCount;
 }

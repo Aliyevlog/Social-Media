@@ -10,7 +10,6 @@ import com.example.socialmedia.exception.AlreadyExistException;
 import com.example.socialmedia.exception.NotFoundException;
 import com.example.socialmedia.mapper.UserMapper;
 import com.example.socialmedia.service.JwtService;
-import com.example.socialmedia.service.UserNotifierService;
 import com.example.socialmedia.service.UserService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -22,8 +21,6 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import java.io.IOException;
-
 @RestController
 @RequestMapping("/auth")
 @RequiredArgsConstructor
@@ -32,14 +29,11 @@ public class AuthController {
     private final UserMapper userMapper;
     private final AuthenticationManager authenticationManager;
     private final JwtService jwtService;
-    private final UserNotifierService userNotifierService;
 
     @PostMapping("/register")
-    public ResponseEntity<BaseResponse<UserResponse>> register(@RequestBody UserRegisterRequest request) throws AlreadyExistException, IOException {
+    public ResponseEntity<BaseResponse<UserResponse>> register(@RequestBody UserRegisterRequest request) throws AlreadyExistException {
         User user = userMapper.map(request);
         user = userService.register(user);
-        userNotifierService.notifyRegistered(user);
-
         UserResponse userResponse = userMapper.map(user);
 
         return ResponseEntity.status(HttpStatus.CREATED).body(BaseResponse.success(userResponse));

@@ -11,20 +11,17 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @Builder
 @Entity
-@Table(name = "likes")
-public class Like {
+@Table(name = "friends")
+public class Friend {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @JoinColumn(name = "user_id", referencedColumnName = "id")
+    @JoinColumn(name = "user1_id", referencedColumnName = "id")
     @ManyToOne
-    private User user;
+    private User user1;
 
-    @JoinColumn(name = "post_id", referencedColumnName = "id")
+    @JoinColumn(name = "user2_id", referencedColumnName = "id")
     @ManyToOne
-    private Post post;
-
-    @Column(name = "like_")
-    private Boolean reaction;
+    private User user2;
 }

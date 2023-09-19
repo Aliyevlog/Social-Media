@@ -8,6 +8,7 @@ import com.example.socialmedia.entity.Like;
 import com.example.socialmedia.exception.NotFoundException;
 import com.example.socialmedia.mapper.LikeMapper;
 import com.example.socialmedia.service.LikeService;
+import com.example.socialmedia.service.impl.LikeServiceImpl;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.MessageSource;
 import org.springframework.context.i18n.LocaleContextHolder;

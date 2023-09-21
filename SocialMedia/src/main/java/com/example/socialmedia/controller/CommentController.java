@@ -15,6 +15,7 @@ import com.example.socialmedia.mapper.CommentMapper;
 import com.example.socialmedia.service.CommentService;
 import com.example.socialmedia.service.PostService;
 import com.example.socialmedia.service.UserService;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.MessageSource;
 import org.springframework.context.i18n.LocaleContextHolder;
@@ -36,7 +37,7 @@ public class CommentController {
 
     @PostMapping("/{postId}")
     public ResponseEntity<BaseResponse<CommentResponse>> add(@PathVariable Long postId,
-                                                             @RequestBody CreateCommentRequest request)
+            @RequestBody @Valid CreateCommentRequest request)
             throws NotFoundException {
         Post post = postService.getByPostId(postId);
         User user = userService.getByUsername(securityConfig.getLoggedInUsername());
@@ -52,7 +53,7 @@ public class CommentController {
 
     @PatchMapping("/{commentId}")
     public ResponseEntity<BaseResponse<CommentResponse>> update(@PathVariable Long commentId,
-                                                                @RequestBody UpdateCommentRequest request)
+            @RequestBody @Valid UpdateCommentRequest request)
             throws NotFoundException, IllegalOperationException {
         Comment comment = commentService.getById(commentId);
         commentMapper.map(request, comment);
@@ -74,8 +75,8 @@ public class CommentController {
 
     @GetMapping("/{postId}")
     public ResponseEntity<PageResponse<CommentResponse>> getByPost(@PathVariable Long postId,
-                                                                   @RequestParam(required = false) Integer page,
-                                                                   @RequestParam(required = false) Integer limit)
+            @RequestParam(required = false) Integer page,
+            @RequestParam(required = false) Integer limit)
             throws NotFoundException {
         Post post = postService.getByPostId(postId);
         Page<Comment> commentPage = commentService.getByPost(post, page, limit);

@@ -11,6 +11,7 @@ import com.example.socialmedia.exception.NotFoundException;
 import com.example.socialmedia.mapper.UserMapper;
 import com.example.socialmedia.service.JwtService;
 import com.example.socialmedia.service.UserService;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -31,7 +32,7 @@ public class AuthController {
     private final JwtService jwtService;
 
     @PostMapping("/register")
-    public ResponseEntity<BaseResponse<UserResponse>> register(@RequestBody UserRegisterRequest request) throws AlreadyExistException {
+    public ResponseEntity<BaseResponse<UserResponse>> register(@RequestBody @Valid UserRegisterRequest request) throws AlreadyExistException {
         User user = userMapper.map(request);
         user = userService.register(user);
         UserResponse userResponse = userMapper.map(user);
@@ -40,7 +41,7 @@ public class AuthController {
     }
 
     @PostMapping("/login")
-    public ResponseEntity<BaseResponse<JwtResponse>> login(@RequestBody UserLoginRequest request) throws NotFoundException {
+    public ResponseEntity<BaseResponse<JwtResponse>> login(@RequestBody @Valid UserLoginRequest request) throws NotFoundException {
         User user = userService.getByUsername(request.getUsername());
 
         authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(

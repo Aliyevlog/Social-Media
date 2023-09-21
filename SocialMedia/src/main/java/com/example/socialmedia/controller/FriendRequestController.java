@@ -5,6 +5,7 @@ import com.example.socialmedia.dto.response.FriendRequestResponse;
 import com.example.socialmedia.dto.response.PageResponse;
 import com.example.socialmedia.dto.response.ShortFriendRequestResponse;
 import com.example.socialmedia.entity.FriendRequest;
+import com.example.socialmedia.exception.IllegalOperationException;
 import com.example.socialmedia.exception.NotFoundException;
 import com.example.socialmedia.mapper.FriendRequestMapper;
 import com.example.socialmedia.service.FriendRequestService;
@@ -26,7 +27,7 @@ public class FriendRequestController {
 
     @PostMapping("/{userId}")
     public ResponseEntity<BaseResponse<FriendRequestResponse>> add(@PathVariable Long userId)
-            throws NotFoundException {
+            throws NotFoundException, IllegalOperationException {
         FriendRequest friendRequest = friendRequestService.add(userId);
         FriendRequestResponse response = friendRequestMapper.map(friendRequest);
 
@@ -42,9 +43,9 @@ public class FriendRequestController {
         return ResponseEntity.status(HttpStatus.ACCEPTED).body(baseResponse);
     }
 
-    @PostMapping("/accept/{id}")
-    public ResponseEntity<BaseResponse<FriendRequestResponse>> accept(@PathVariable Long id) throws NotFoundException {
-        FriendRequest friendRequest = friendRequestService.accept(id);
+    @PostMapping("/accept/{senderId}")
+    public ResponseEntity<BaseResponse<FriendRequestResponse>> accept(@PathVariable Long senderId) throws NotFoundException {
+        FriendRequest friendRequest = friendRequestService.accept(senderId);
         FriendRequestResponse response = friendRequestMapper.map(friendRequest);
 
         return ResponseEntity.status(HttpStatus.ACCEPTED).body(BaseResponse.success(response));

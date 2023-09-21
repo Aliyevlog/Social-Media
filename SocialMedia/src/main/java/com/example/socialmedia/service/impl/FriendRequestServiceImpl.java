@@ -2,6 +2,8 @@ package com.example.socialmedia.service.impl;
 
 import com.example.socialmedia.config.SecurityConfig;
 import com.example.socialmedia.entity.FriendRequest;
+import com.example.socialmedia.entity.User;
+import com.example.socialmedia.exception.IllegalOperationException;
 import com.example.socialmedia.exception.NotFoundException;
 import com.example.socialmedia.repository.FriendRequestRepository;
 import com.example.socialmedia.service.FriendRequestService;
@@ -25,9 +27,17 @@ public class FriendRequestServiceImpl implements FriendRequestService {
     private final SecurityConfig securityConfig;
 
     @Override
-    public FriendRequest add(Long receiverId) throws NotFoundException {
+    public FriendRequest add(Long receiverId) throws NotFoundException, IllegalOperationException {
+        User sender = userService.getByUsername(securityConfig.getLoggedInUsername());
+        if (friendService.isFriend(sender.getId(), receiverId))
+            throw new IllegalOperationException(messageSource.getMessage("friend.exist", null,
+                    LocaleContextHolder.getLocale()));
+        if (exists(sender.getId(), receiverId))
+            throw new IllegalOperationException(messageSource.getMessage("friendRequest.exist", null,
+                    LocaleContextHolder.getLocale()));
+
         FriendRequest friendRequest = FriendRequest.builder()
-                .sender(userService.getByUsername(securityConfig.getLoggedInUsername()))
+                .sender(sender)
                 .receiver(userService.getById(receiverId))
                 .build();
 
@@ -40,9 +50,11 @@ public class FriendRequestServiceImpl implements FriendRequestService {
     }
 
     @Override
-    public FriendRequest accept(Long id) throws NotFoundException {
-        FriendRequest friendRequest = friendRequestRepository.findById(id).orElseThrow(() -> new NotFoundException(
-                messageSource.getMessage("friendRequest.notFoundById", null, LocaleContextHolder.getLocale())));
+    public FriendRequest accept(Long senderId) throws NotFoundException {
+        User receiver = userService.getByUsername(securityConfig.getLoggedInUsername());
+        FriendRequest friendRequest = friendRequestRepository.findBySenderIdAndReceiverId(senderId, receiver.getId())
+                .orElseThrow(() -> new NotFoundException(
+                        messageSource.getMessage("friendRequest.notFoundById", null, LocaleContextHolder.getLocale())));
 
         friendService.add(friendRequest.getSender().getId(), friendRequest.getReceiver().getId());
         remove(friendRequest.getId());
@@ -56,5 +68,10 @@ public class FriendRequestServiceImpl implements FriendRequestService {
                 PageRequest.of(0, 10);
 
         return friendRequestRepository.findByReceiverUsername(securityConfig.getLoggedInUsername(), pageable);
+    }
+
+    private boolean exists(Long senderId, Long receiverId) {
+        return friendRequestRepository.existsBySenderIdAndReceiverId(senderId, receiverId) ||
+               friendRequestRepository.existsBySenderIdAndReceiverId(receiverId, senderId);
     }
 }

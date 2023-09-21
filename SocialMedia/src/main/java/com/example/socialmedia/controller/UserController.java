@@ -36,7 +36,13 @@ public class UserController {
     private final SecurityConfig securityConfig;
     private final FileService fileService;
 
-    //TODO Get by id endpoint
+    @GetMapping("/{id}")
+    public ResponseEntity<BaseResponse<UserResponse>> getById(@PathVariable Long id) throws NotFoundException {
+        User user = userService.getById(id);
+        UserResponse userResponse = userMapper.map(user);
+
+        return ResponseEntity.ok(BaseResponse.success(userResponse));
+    }
 
     @GetMapping("/getByUsername/{username}")
     public ResponseEntity<BaseResponse<UserResponse>> getByUsername(@PathVariable String username) throws NotFoundException {

@@ -13,6 +13,7 @@ import com.example.socialmedia.exception.NotFoundException;
 import com.example.socialmedia.mapper.PostMapper;
 import com.example.socialmedia.service.PostService;
 import com.example.socialmedia.service.UserService;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.MessageSource;
 import org.springframework.context.i18n.LocaleContextHolder;
@@ -43,7 +44,7 @@ public class PostController {
     }
 
     @PostMapping
-    public ResponseEntity<BaseResponse<PostResponse>> add(@RequestBody CreatePostRequest request)
+    public ResponseEntity<BaseResponse<PostResponse>> add(@RequestBody @Valid CreatePostRequest request)
             throws NotFoundException {
         User user = userService.getByUsername(securityConfig.getLoggedInUsername());
         Post post = postMapper.map(request);
@@ -56,7 +57,7 @@ public class PostController {
 
     @PatchMapping("/{id}")
     public ResponseEntity<BaseResponse<PostResponse>> update(@PathVariable Long id,
-                                                             @RequestBody UpdatePostRequest request)
+            @RequestBody @Valid UpdatePostRequest request)
             throws NotFoundException, IllegalOperationException {
         Post post = postService.getByPostId(id);
         postMapper.map(request, post);

@@ -38,4 +38,10 @@ public class FriendServiceImpl implements FriendService {
                 PageRequest.of(0, 10);
         return friendRepository.findByUser1IdOrUser2Id(userId, userId, pageable);
     }
+
+    @Override
+    public boolean isFriend(Long user1Id, Long user2Id) {
+        return friendRepository.existsByUser1IdAndUser2Id(user1Id, user2Id) ||
+               friendRepository.existsByUser1IdAndUser2Id(user2Id, user1Id);
+    }
 }

@@ -1,16 +1,17 @@
 package com.example.socialmedia.service;
 
-import com.example.socialmedia.entity.FriendRequest;
+import com.example.socialmedia.dto.response.FriendRequestResponse;
+import com.example.socialmedia.dto.response.PageResponse;
+import com.example.socialmedia.dto.response.ShortFriendRequestResponse;
 import com.example.socialmedia.exception.IllegalOperationException;
 import com.example.socialmedia.exception.NotFoundException;
-import org.springframework.data.domain.Page;
 
 public interface FriendRequestService {
-    FriendRequest add (Long receiverId) throws NotFoundException, IllegalOperationException;
+    FriendRequestResponse add(Long receiverId) throws NotFoundException, IllegalOperationException;
 
-    void remove (Long id);
+    void remove(Long id);
 
-    FriendRequest accept (Long senderId) throws NotFoundException;
+    FriendRequestResponse accept(Long senderId) throws NotFoundException;
 
-    Page<FriendRequest> getAll (Integer page, Integer limit);
+    PageResponse<ShortFriendRequestResponse> getAll(Integer page, Integer limit);
 }

@@ -2,6 +2,7 @@ package com.example.socialmedia.advice;
 
 import com.example.socialmedia.dto.response.BaseResponse;
 import com.example.socialmedia.exception.AlreadyExistException;
+import com.example.socialmedia.exception.IllegalOperationException;
 import com.example.socialmedia.exception.NotFoundException;
 import lombok.NonNull;
 import org.springframework.context.support.DefaultMessageSourceResolvable;
@@ -41,5 +42,10 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
     @ExceptionHandler(NotFoundException.class)
     public ResponseEntity<Object> handleNotFoundException(NotFoundException ex) {
         return ResponseEntity.status(HttpStatus.NOT_FOUND).body(BaseResponse.error(ex.getMessage()));
+    }
+
+    @ExceptionHandler(IllegalOperationException.class)
+    public ResponseEntity<Object> handleIllegalOperationException(IllegalOperationException ex) {
+        return ResponseEntity.status(HttpStatus.CONFLICT).body(BaseResponse.error(ex.getMessage()));
     }
 }

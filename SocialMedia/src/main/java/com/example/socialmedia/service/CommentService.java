@@ -1,19 +1,18 @@
 package com.example.socialmedia.service;
 
-import com.example.socialmedia.entity.Comment;
-import com.example.socialmedia.entity.Post;
+import com.example.socialmedia.dto.request.CreateCommentRequest;
+import com.example.socialmedia.dto.request.UpdateCommentRequest;
+import com.example.socialmedia.dto.response.CommentResponse;
+import com.example.socialmedia.dto.response.PageResponse;
 import com.example.socialmedia.exception.IllegalOperationException;
 import com.example.socialmedia.exception.NotFoundException;
-import org.springframework.data.domain.Page;
 
 public interface CommentService {
-    Comment add(Comment comment);
+    CommentResponse add(Long postId, CreateCommentRequest createComment) throws NotFoundException;
 
-    Comment update(Comment comment) throws IllegalOperationException;
+    CommentResponse update(Long commentId, UpdateCommentRequest updateComment) throws IllegalOperationException, NotFoundException;
 
-    Page<Comment> getByPost(Post post, Integer page, Integer limit);
-
-    Comment getById (Long id) throws NotFoundException;
+    PageResponse<CommentResponse> getByPost(Long postId, Integer page, Integer limit) throws NotFoundException;
 
     void remove(Long id) throws NotFoundException, IllegalOperationException;
 }

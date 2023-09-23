@@ -4,15 +4,11 @@ import com.example.socialmedia.dto.response.BaseResponse;
 import com.example.socialmedia.dto.response.LikeResponse;
 import com.example.socialmedia.dto.response.PageResponse;
 import com.example.socialmedia.dto.response.ShortLikeResponse;
-import com.example.socialmedia.entity.Like;
 import com.example.socialmedia.exception.NotFoundException;
-import com.example.socialmedia.mapper.LikeMapper;
 import com.example.socialmedia.service.LikeService;
-import com.example.socialmedia.service.impl.LikeServiceImpl;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.MessageSource;
 import org.springframework.context.i18n.LocaleContextHolder;
-import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -22,21 +18,18 @@ import org.springframework.web.bind.annotation.*;
 @RequiredArgsConstructor
 public class LikeController {
     private final LikeService likeService;
-    private final LikeMapper likeMapper;
     private final MessageSource messageSource;
 
     @PostMapping("/like/{postId}")
     public ResponseEntity<BaseResponse<LikeResponse>> like(@PathVariable Long postId) throws NotFoundException {
-        Like like = likeService.like(postId);
-        LikeResponse likeResponse = likeMapper.map(like);
+        LikeResponse likeResponse = likeService.like(postId);
 
         return ResponseEntity.status(HttpStatus.ACCEPTED).body(BaseResponse.success(likeResponse));
     }
 
     @PostMapping("/dislike/{postId}")
     public ResponseEntity<BaseResponse<LikeResponse>> dislike(@PathVariable Long postId) throws NotFoundException {
-        Like like = likeService.dislike(postId);
-        LikeResponse likeResponse = likeMapper.map(like);
+        LikeResponse likeResponse = likeService.dislike(postId);
 
         return ResponseEntity.status(HttpStatus.ACCEPTED).body(BaseResponse.success(likeResponse));
     }
@@ -56,8 +49,7 @@ public class LikeController {
             @RequestParam(required = false) Boolean like,
             @RequestParam(required = false) Integer page,
             @RequestParam(required = false) Integer limit) {
-        Page<Like> likes = likeService.getByPostIdAndReaction(postId, like, page, limit);
-        PageResponse<ShortLikeResponse> pageResponse = likeMapper.map(likes);
+        PageResponse<ShortLikeResponse> pageResponse = likeService.getByPostIdAndReaction(postId, like, page, limit);
 
         return ResponseEntity.ok(pageResponse);
     }

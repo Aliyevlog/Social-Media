@@ -68,8 +68,16 @@ public class JwtAuthorizationFilter extends OncePerRequestFilter {
                         username, null, userDetails.getAuthorities());
                 authenticationToken.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
                 SecurityContextHolder.getContext().setAuthentication(authenticationToken);
+                filterChain.doFilter(request, response);
+                return;
             }
         }
+
+        response.setStatus(HttpStatus.UNAUTHORIZED.value());
+        response.setContentType(MediaType.APPLICATION_JSON_VALUE);
+        new ObjectMapper().writeValue(response.getOutputStream(),
+                BaseResponse.error(messageSource.getMessage(
+                        "jwt.invalid", null, LocaleContextHolder.getLocale())));
         filterChain.doFilter(request, response);
     }
 }

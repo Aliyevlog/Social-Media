@@ -4,6 +4,7 @@ import com.example.socialmedia.filter.JwtAuthorizationFilter;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.http.HttpMethod;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.AuthenticationProvider;
 import org.springframework.security.authentication.dao.DaoAuthenticationProvider;
@@ -39,6 +40,14 @@ public class SecurityConfig {
                                 "/v3/api-docs/**",
                                 "/swagger-ui/**",
                                 "/user/profilePhoto/**").permitAll())
+                .authorizeHttpRequests(auth ->
+                        auth.requestMatchers(HttpMethod.PATCH,
+                                "/post/**",
+                                "/comment/**").hasAnyAuthority("USER", "MODERATOR"))
+                .authorizeHttpRequests(auth ->
+                        auth.requestMatchers(HttpMethod.DELETE,
+                                "/post/**",
+                                "/comment/**").hasAnyAuthority("USER", "MODERATOR"))
                 .authorizeHttpRequests(auth ->
                         auth.anyRequest().authenticated())
                 .addFilterBefore(jwtAuthorizationFilter, UsernamePasswordAuthenticationFilter.class)

@@ -1,18 +1,20 @@
 package com.example.socialmedia.service;
 
-import com.example.socialmedia.entity.Post;
+import com.example.socialmedia.dto.request.CreatePostRequest;
+import com.example.socialmedia.dto.request.UpdatePostRequest;
+import com.example.socialmedia.dto.response.PageResponse;
+import com.example.socialmedia.dto.response.PostResponse;
 import com.example.socialmedia.exception.IllegalOperationException;
 import com.example.socialmedia.exception.NotFoundException;
-import org.springframework.data.domain.Page;
 
 public interface PostService {
-    Post getByPostId(Long id) throws NotFoundException;
+    PostResponse getByPostId(Long id) throws NotFoundException;
 
-    Post add(Post post);
+    PostResponse add(CreatePostRequest createPost) throws NotFoundException;
 
-    Post update(Post post) throws IllegalOperationException;
+    PostResponse update(Long id, UpdatePostRequest updatePost) throws IllegalOperationException, NotFoundException;
 
     void remove(Long id) throws NotFoundException, IllegalOperationException;
 
-    Page<Post> getAll (String text, String userName, Integer page, Integer limit);
+    PageResponse<PostResponse> getAll(String text, String userName, Integer page, Integer limit);
 }

@@ -1,80 +1,82 @@
 package com.example.socialmedia.service.impl;
 
 import com.example.socialmedia.config.SecurityConfig;
+import com.example.socialmedia.dao.LikeDao;
+import com.example.socialmedia.dao.PostDao;
+import com.example.socialmedia.dao.UserDao;
+import com.example.socialmedia.dto.response.LikeResponse;
+import com.example.socialmedia.dto.response.PageResponse;
+import com.example.socialmedia.dto.response.ShortLikeResponse;
 import com.example.socialmedia.entity.Like;
 import com.example.socialmedia.entity.User;
 import com.example.socialmedia.exception.NotFoundException;
-import com.example.socialmedia.repository.LikeRepository;
+import com.example.socialmedia.mapper.LikeMapper;
 import com.example.socialmedia.service.LikeService;
-import com.example.socialmedia.service.PostService;
-import com.example.socialmedia.service.UserService;
 import lombok.RequiredArgsConstructor;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 @Service
 @RequiredArgsConstructor
 public class LikeServiceImpl implements LikeService {
-    private final LikeRepository likeRepository;
-    private final UserService userService;
-    private final PostService postService;
+    private final LikeDao likeDao;
+    private final UserDao userDao;
+    private final PostDao postDao;
     private final SecurityConfig securityConfig;
+    private final LikeMapper likeMapper;
 
     @Override
-    public Like like(Long postId) throws NotFoundException {
-        return changeReaction(getUserId(), postId, true);
+    public LikeResponse like(Long postId) throws NotFoundException {
+        return likeMapper.map(changeReaction(getUserId(), postId, true));
     }
 
     @Override
-    public Like dislike(Long postId) throws NotFoundException {
-        return changeReaction(getUserId(), postId, false);
+    public LikeResponse dislike(Long postId) throws NotFoundException {
+        return likeMapper.map(changeReaction(getUserId(), postId, false));
     }
 
     @Override
     public void remove(Long postId) throws NotFoundException {
-        likeRepository.findByUserIdAndPostId(getUserId(), postId).ifPresent(likeRepository::delete);
+        Like like = likeDao.getByUserIdAndPostId(getUserId(), postId);
+        likeDao.remove(like.getId());
     }
 
     @Override
     public Long countLikeByPost(Long postId) {
-        return likeRepository.countByPostIdAndReaction(postId, true);
+        return likeDao.countByPostIdAndReaction(postId, true);
     }
 
     @Override
     public Long countDislikeByPost(Long postId) {
-        return likeRepository.countByPostIdAndReaction(postId, false);
+        return likeDao.countByPostIdAndReaction(postId, false);
     }
 
     @Override
-    public Page<Like> getByPostIdAndReaction(Long postId, Boolean reaction, Integer page, Integer limit) {
-        Pageable pageable = page != null && limit != null ? PageRequest.of(page - 1, limit) :
-                PageRequest.of(0, 10);
-
-        return likeRepository.findLikeByPostIdAndReaction(postId, reaction, pageable);
+    public PageResponse<ShortLikeResponse> getByPostIdAndReaction(Long postId, Boolean reaction, Integer page, Integer limit) {
+        return likeMapper.map(likeDao.getByPostIdAndReaction(postId, reaction, page, limit));
     }
 
     private Like changeReaction(Long userId, Long postId, Boolean reaction) throws NotFoundException {
-        Like like = likeRepository.findByUserIdAndPostId(userId, postId).orElse(null);
-        if (like != null) {
+        Like like;
+        try {
+            like = likeDao.getByUserIdAndPostId(userId, postId);
             like.setReaction(reaction);
-            like = likeRepository.save(like);
+            like = likeDao.update(like);
             return like;
+        } catch (NotFoundException ex) {
+            like = Like.builder()
+                    .user(userDao.getById(userId))
+                    .post(postDao.getByPostId(postId))
+                    .reaction(reaction)
+                    .build();
+            like = likeDao.add(like);
         }
 
-        like = Like.builder()
-                .user(userService.getById(userId))
-                .post(postService.getByPostId(postId))
-                .reaction(reaction)
-                .build();
-        like = likeRepository.save(like);
         return like;
     }
 
     private Long getUserId() throws NotFoundException {
         String username = securityConfig.getLoggedInUsername();
-        User user = userService.getByUsername(username);
+        User user = userDao.getByUsername(username);
         return user.getId();
     }
 }

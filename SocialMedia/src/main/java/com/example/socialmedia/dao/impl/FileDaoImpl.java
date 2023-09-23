@@ -1,14 +1,14 @@
-package com.example.socialmedia.service.impl;
+package com.example.socialmedia.dao.impl;
 
+import com.example.socialmedia.dao.FileDao;
 import com.example.socialmedia.entity.File;
 import com.example.socialmedia.repository.FileRepository;
-import com.example.socialmedia.service.FileService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 @Service
 @RequiredArgsConstructor
-public class FileServiceImpl implements FileService {
+public class FileDaoImpl implements FileDao {
     private final FileRepository fileRepository;
 
     @Override

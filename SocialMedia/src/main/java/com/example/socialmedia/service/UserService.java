@@ -1,22 +1,30 @@
 package com.example.socialmedia.service;
 
-import com.example.socialmedia.entity.User;
+import com.example.socialmedia.dto.request.UpdateUserRequest;
+import com.example.socialmedia.dto.request.UserRegisterRequest;
+import com.example.socialmedia.dto.response.FileResponse;
+import com.example.socialmedia.dto.response.PageResponse;
+import com.example.socialmedia.dto.response.UserResponse;
 import com.example.socialmedia.exception.AlreadyExistException;
 import com.example.socialmedia.exception.NotFoundException;
-import org.springframework.data.domain.Page;
+import org.springframework.web.multipart.MultipartFile;
 
-import java.util.List;
+import java.io.IOException;
 
-public interface UserService
-{
-    User register (User user) throws AlreadyExistException;
-    User update (User user) throws AlreadyExistException;
+public interface UserService {
+    UserResponse register(UserRegisterRequest request) throws AlreadyExistException;
 
-    User getByUsername (String username) throws NotFoundException;
+    UserResponse update(UpdateUserRequest updateUser) throws AlreadyExistException, NotFoundException;
 
-    User getById (Long id) throws NotFoundException;
+    UserResponse getByUsername(String username) throws NotFoundException;
 
-    List<User> getByName (String name);
+    UserResponse getLoggedInUser() throws NotFoundException;
 
-    Page<User> getAll (String username, Integer page, Integer limit);
+    UserResponse getById(Long id) throws NotFoundException;
+
+    PageResponse<UserResponse> getAll(String username, Integer page, Integer limit);
+
+    UserResponse uploadProfilePhoto (MultipartFile multipartFile) throws IOException, NotFoundException;
+
+    FileResponse getProfilePhoto (Long userId) throws NotFoundException, IOException;
 }

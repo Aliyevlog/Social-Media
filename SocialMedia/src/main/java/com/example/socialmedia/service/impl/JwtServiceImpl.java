@@ -1,11 +1,14 @@
 package com.example.socialmedia.service.impl;
 
+import com.example.socialmedia.dao.UserDao;
+import com.example.socialmedia.exception.NotFoundException;
 import com.example.socialmedia.service.JwtService;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
 import io.jsonwebtoken.io.Decoders;
 import io.jsonwebtoken.security.Keys;
+import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Service;
@@ -16,12 +19,15 @@ import java.util.HashMap;
 import java.util.function.Function;
 
 @Service
+@RequiredArgsConstructor
 public class JwtServiceImpl implements JwtService {
     @Value("${jwt.expireAt}")
     private Long expireTime;
 
     @Value("${jwt.secretKey}")
     private String secretKey;
+
+    private final UserDao userDao;
 
     @Override
     public String extractUsername(String token) {
@@ -37,6 +43,11 @@ public class JwtServiceImpl implements JwtService {
                 .setExpiration(new Date(System.currentTimeMillis() + expireTime))
                 .signWith(getSignInKey(), SignatureAlgorithm.HS256)
                 .compact();
+    }
+
+    @Override
+    public String generateAccessToken(String username) throws NotFoundException {
+        return generateAccessToken(userDao.getByUsername(username));
     }
 
     @Override

@@ -1,67 +1,68 @@
 package com.example.socialmedia.service.impl;
 
 import com.example.socialmedia.config.SecurityConfig;
+import com.example.socialmedia.dao.CommentDao;
+import com.example.socialmedia.dao.PostDao;
+import com.example.socialmedia.dto.request.CreateCommentRequest;
+import com.example.socialmedia.dto.request.UpdateCommentRequest;
+import com.example.socialmedia.dto.response.CommentResponse;
+import com.example.socialmedia.dto.response.PageResponse;
 import com.example.socialmedia.entity.Comment;
 import com.example.socialmedia.entity.Post;
 import com.example.socialmedia.exception.IllegalOperationException;
 import com.example.socialmedia.exception.NotFoundException;
-import com.example.socialmedia.repository.CommentRepository;
+import com.example.socialmedia.mapper.CommentMapper;
 import com.example.socialmedia.service.CommentService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.MessageSource;
 import org.springframework.context.i18n.LocaleContextHolder;
 import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
-
-import java.util.Date;
 
 @Service
 @RequiredArgsConstructor
 public class CommentServiceImpl implements CommentService {
-    private final CommentRepository commentRepository;
+    private final CommentDao commentDao;
     private final MessageSource messageSource;
     private final SecurityConfig securityConfig;
+    private final CommentMapper commentMapper;
+    private final PostDao postDao;
 
     @Override
-    public Comment add(Comment comment) {
-        comment.setCreatedAt(new Date());
+    public CommentResponse add(Long postId, CreateCommentRequest createComment) throws NotFoundException {
+        Comment comment = commentMapper.map(createComment, postId);
 
-        return commentRepository.save(comment);
+        return commentMapper.map(commentDao.add(comment));
     }
 
     @Override
-    public Comment update(Comment comment) throws IllegalOperationException {
+    public CommentResponse update(Long commentId, UpdateCommentRequest updateComment)
+            throws IllegalOperationException, NotFoundException {
+        Comment comment = commentDao.getById(commentId);
+        commentMapper.map(updateComment, comment);
+
         if (!comment.getUser().getUsername().equals(securityConfig.getLoggedInUsername()))
             throw new IllegalOperationException(messageSource.getMessage("comment.illegalUpdate", null,
                     LocaleContextHolder.getLocale()));
 
-        return commentRepository.save(comment);
+        return commentMapper.map(commentDao.add(comment));
     }
 
     @Override
-    public Page<Comment> getByPost(Post post, Integer page, Integer limit) {
-        Pageable pageable = page != null && limit != null ?
-                PageRequest.of(page - 1, limit) :
-                PageRequest.of(0, 10);
+    public PageResponse<CommentResponse> getByPost(Long postId, Integer page, Integer limit) throws NotFoundException {
+        Post post = postDao.getByPostId(postId);
+        Page<Comment> commentPage = commentDao.getByPost(post, page, limit);
 
-        return commentRepository.findByPost(post, pageable);
-    }
-
-    @Override
-    public Comment getById(Long id) throws NotFoundException {
-        return commentRepository.findById(id).orElseThrow(() -> new NotFoundException(messageSource
-                .getMessage("comment.notFoundById", null, LocaleContextHolder.getLocale())));
+        return commentMapper.map(commentPage);
     }
 
     @Override
     public void remove(Long id) throws NotFoundException, IllegalOperationException {
-        Comment comment = getById(id);
+        Comment comment = commentDao.getById(id);
         if (!comment.getUser().getUsername().equals(securityConfig.getLoggedInUsername()))
             throw new IllegalOperationException(messageSource.getMessage("comment.illegalDelete", null,
                     LocaleContextHolder.getLocale()));
 
-        commentRepository.deleteById(id);
+        commentDao.remove(id);
     }
 }

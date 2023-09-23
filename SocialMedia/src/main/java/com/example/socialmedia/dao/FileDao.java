@@ -1,8 +1,8 @@
-package com.example.socialmedia.service;
+package com.example.socialmedia.dao;
 
 import com.example.socialmedia.entity.File;
 
-public interface FileService {
+public interface FileDao {
     File add (File file);
 
     File update (File file);

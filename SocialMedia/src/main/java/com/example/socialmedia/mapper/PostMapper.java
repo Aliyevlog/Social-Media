@@ -1,11 +1,14 @@
 package com.example.socialmedia.mapper;
 
+import com.example.socialmedia.config.SecurityConfig;
+import com.example.socialmedia.dao.LikeDao;
+import com.example.socialmedia.dao.UserDao;
 import com.example.socialmedia.dto.request.CreatePostRequest;
 import com.example.socialmedia.dto.request.UpdatePostRequest;
 import com.example.socialmedia.dto.response.PageResponse;
 import com.example.socialmedia.dto.response.PostResponse;
 import com.example.socialmedia.entity.Post;
-import com.example.socialmedia.service.LikeService;
+import com.example.socialmedia.exception.NotFoundException;
 import lombok.RequiredArgsConstructor;
 import org.modelmapper.ModelMapper;
 import org.springframework.data.domain.Page;
@@ -19,7 +22,9 @@ import java.util.List;
 public class PostMapper {
 
     private final ModelMapper modelMapper;
-    private final LikeService likeService;
+    private final LikeDao likeDao;
+    private final SecurityConfig securityConfig;
+    private final UserDao userDao;
 
     public void map(UpdatePostRequest source, Post target) {
         modelMapper.map(source, target);
@@ -30,16 +35,19 @@ public class PostMapper {
         String fullName = source.getUser().getName() + " " + source.getUser().getSurname();
         target.setFullName(fullName);
 
-        Long likeCount = likeService.countLikeByPost(source.getId());
-        Long dislikeCount = likeService.countDislikeByPost(source.getId());
+        Long likeCount = likeDao.countByPostIdAndReaction(source.getId(), true);
+        Long dislikeCount = likeDao.countByPostIdAndReaction(source.getId(), false);
         target.setLikeCount(likeCount);
         target.setDislikeCount(dislikeCount);
 
         return target;
     }
 
-    public Post map(CreatePostRequest source) {
-        return modelMapper.map(source, Post.class);
+    public Post map(CreatePostRequest source) throws NotFoundException {
+        Post target = modelMapper.map(source, Post.class);
+        target.setUser(userDao.getByUsername(securityConfig.getLoggedInUsername()));
+
+        return target;
     }
 
     public PageResponse<PostResponse> map(Page<Post> source) {

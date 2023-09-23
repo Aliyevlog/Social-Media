@@ -4,15 +4,12 @@ import com.example.socialmedia.dto.response.BaseResponse;
 import com.example.socialmedia.dto.response.FriendRequestResponse;
 import com.example.socialmedia.dto.response.PageResponse;
 import com.example.socialmedia.dto.response.ShortFriendRequestResponse;
-import com.example.socialmedia.entity.FriendRequest;
 import com.example.socialmedia.exception.IllegalOperationException;
 import com.example.socialmedia.exception.NotFoundException;
-import com.example.socialmedia.mapper.FriendRequestMapper;
 import com.example.socialmedia.service.FriendRequestService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.MessageSource;
 import org.springframework.context.i18n.LocaleContextHolder;
-import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -22,14 +19,12 @@ import org.springframework.web.bind.annotation.*;
 @RequiredArgsConstructor
 public class FriendRequestController {
     private final FriendRequestService friendRequestService;
-    private final FriendRequestMapper friendRequestMapper;
     private final MessageSource messageSource;
 
     @PostMapping("/{userId}")
     public ResponseEntity<BaseResponse<FriendRequestResponse>> add(@PathVariable Long userId)
             throws NotFoundException, IllegalOperationException {
-        FriendRequest friendRequest = friendRequestService.add(userId);
-        FriendRequestResponse response = friendRequestMapper.map(friendRequest);
+        FriendRequestResponse response = friendRequestService.add(userId);
 
         return ResponseEntity.status(HttpStatus.CREATED).body(BaseResponse.success(response));
     }
@@ -45,8 +40,7 @@ public class FriendRequestController {
 
     @PostMapping("/accept/{senderId}")
     public ResponseEntity<BaseResponse<FriendRequestResponse>> accept(@PathVariable Long senderId) throws NotFoundException {
-        FriendRequest friendRequest = friendRequestService.accept(senderId);
-        FriendRequestResponse response = friendRequestMapper.map(friendRequest);
+        FriendRequestResponse response = friendRequestService.accept(senderId);
 
         return ResponseEntity.status(HttpStatus.ACCEPTED).body(BaseResponse.success(response));
     }
@@ -55,8 +49,7 @@ public class FriendRequestController {
     public ResponseEntity<PageResponse<ShortFriendRequestResponse>> getAll(
             @RequestParam(required = false) Integer page,
             @RequestParam(required = false) Integer limit) {
-        Page<FriendRequest> friendRequests = friendRequestService.getAll(page, limit);
-        PageResponse<ShortFriendRequestResponse> pageResponse = friendRequestMapper.map(friendRequests);
+        PageResponse<ShortFriendRequestResponse> pageResponse = friendRequestService.getAll(page, limit);
 
         return ResponseEntity.ok(pageResponse);
     }

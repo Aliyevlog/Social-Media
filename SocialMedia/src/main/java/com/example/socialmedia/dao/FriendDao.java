@@ -11,5 +11,7 @@ public interface FriendDao {
     Page<Friend> getAll(Long userId, Integer page, Integer limit);
 
     boolean existsByUser1IdAndUser2Id(Long user1Id, Long user2Id);
+
+    void removeByUserId(Long userId);
 }
 

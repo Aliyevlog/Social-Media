@@ -14,4 +14,6 @@ public interface FriendRequestDao {
     boolean existsBySenderIdAndReceiverId(Long senderId, Long receiverId);
 
     FriendRequest getBySenderIdAndReceiverId(Long senderId, Long receiverId) throws NotFoundException;
+
+    void removeByUserId (Long userId);
 }

@@ -16,4 +16,6 @@ public interface LikeDao {
     Page<Like> getByPostIdAndReaction(Long postId, Boolean reaction, Integer page, Integer limit);
 
     Like getByUserIdAndPostId(Long userId, Long postId) throws NotFoundException;
+
+    void removeByUserId (Long userId);
 }

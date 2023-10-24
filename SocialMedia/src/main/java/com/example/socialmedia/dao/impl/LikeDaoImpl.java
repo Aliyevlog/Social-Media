@@ -47,4 +47,9 @@ public class LikeDaoImpl implements LikeDao {
     public Like getByUserIdAndPostId(Long userId, Long postId) throws NotFoundException {
         return likeRepository.findByUserIdAndPostId(userId, postId).orElseThrow(NotFoundException::new);
     }
+
+    @Override
+    public void removeByUserId(Long userId) {
+        likeRepository.deleteAllByUserId(userId);
+    }
 }

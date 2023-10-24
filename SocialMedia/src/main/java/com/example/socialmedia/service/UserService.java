@@ -27,4 +27,6 @@ public interface UserService {
     UserResponse uploadProfilePhoto (MultipartFile multipartFile) throws IOException, NotFoundException;
 
     FileResponse getProfilePhoto (Long userId) throws NotFoundException, IOException;
+
+    void remove(Long id);
 }

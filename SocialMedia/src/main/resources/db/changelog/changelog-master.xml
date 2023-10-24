@@ -8,9 +8,7 @@
     <include file="db/changelog/1.0/create-posts.sql"/>
     <include file="db/changelog/1.0/create-comments.sql"/>
     <include file="db/changelog/1.0/create-files.sql"/>
+    <include file="db/changelog/1.0/create-likes.sql"/>
+    <include file="db/changelog/1.0/create-friend_requests.sql"/>
+    <include file="db/changelog/1.0/create-friends.sql"/>
 </databaseChangeLog>
-
-
-
-
-

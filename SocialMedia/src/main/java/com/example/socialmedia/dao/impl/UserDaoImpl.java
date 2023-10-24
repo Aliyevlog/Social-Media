@@ -66,4 +66,9 @@ public class UserDaoImpl implements UserDao {
 
         return userRepository.findByUsernameContaining(username, pageable);
     }
+
+    @Override
+    public void remove(Long id) {
+        userRepository.deleteById(id);
+    }
 }

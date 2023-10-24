@@ -48,6 +48,11 @@ public class PostDaoImpl implements PostDao {
     }
 
     @Override
+    public void removeByUserId(Long userId) {
+        postRepository.deleteAllByUserId(userId);
+    }
+
+    @Override
     public Page<Post> getAll(String text, String userName, Integer page, Integer limit) {
         Pageable pageable = (page != null && limit != null) ?
                 PageRequest.of(page - 1, limit) :

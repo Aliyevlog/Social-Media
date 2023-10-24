@@ -35,4 +35,9 @@ public class FriendDaoImpl implements FriendDao {
     public boolean existsByUser1IdAndUser2Id(Long user1Id, Long user2Id) {
         return friendRepository.existsByUser1IdAndUser2Id(user1Id, user2Id);
     }
+
+    @Override
+    public void removeByUserId(Long userId) {
+        friendRepository.deleteAllByUser1IdOrUser2Id(userId, userId);
+    }
 }

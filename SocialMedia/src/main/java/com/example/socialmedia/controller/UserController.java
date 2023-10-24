@@ -83,4 +83,11 @@ public class UserController {
                         "attachment; filename=\"" + fileResponse.getName() + "\"")
                 .body(new ByteArrayResource(fileResponse.getArr()));
     }
+
+    @DeleteMapping("/{id}")
+    public ResponseEntity<BaseResponse<Void>> remove(@PathVariable Long id) {
+        userService.remove(id);
+
+        return ResponseEntity.status(HttpStatus.ACCEPTED).body(BaseResponse.success(null));
+    }
 }

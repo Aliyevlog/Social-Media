@@ -48,4 +48,9 @@ public class FriendRequestDaoImpl implements FriendRequestDao {
         return friendRequestRepository.findBySenderIdAndReceiverId(senderId, receiverId).orElseThrow(() -> new NotFoundException(messageSource
                 .getMessage("friendRequest.notFoundById", null, LocaleContextHolder.getLocale())));
     }
+
+    @Override
+    public void removeByUserId(Long userId) {
+        friendRequestRepository.deleteAllBySenderIdOrReceiverId(userId, userId);
+    }
 }

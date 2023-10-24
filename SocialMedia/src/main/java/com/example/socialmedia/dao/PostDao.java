@@ -13,5 +13,6 @@ public interface PostDao {
 
     void remove(Long id);
 
+    void removeByUserId (Long userId);
     Page<Post> getAll(String text, String userName, Integer page, Integer limit);
 }

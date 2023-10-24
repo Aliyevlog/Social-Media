@@ -41,13 +41,8 @@ public class SecurityConfig {
                                 "/swagger-ui/**",
                                 "/user/profilePhoto/**").permitAll())
                 .authorizeHttpRequests(auth ->
-                        auth.requestMatchers(HttpMethod.PATCH,
-                                "/post/**",
-                                "/comment/**").hasAnyAuthority("USER", "MODERATOR"))
-                .authorizeHttpRequests(auth ->
                         auth.requestMatchers(HttpMethod.DELETE,
-                                "/post/**",
-                                "/comment/**").hasAnyAuthority("USER", "MODERATOR"))
+                                "/user/**").hasAnyAuthority("MODERATOR"))
                 .authorizeHttpRequests(auth ->
                         auth.anyRequest().authenticated())
                 .addFilterBefore(jwtAuthorizationFilter, UsernamePasswordAuthenticationFilter.class)

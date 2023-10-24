@@ -15,4 +15,6 @@ public interface CommentDao {
     Comment getById(Long id) throws NotFoundException;
 
     void remove(Long id);
+
+    void removeByUserId (Long userId);
 }

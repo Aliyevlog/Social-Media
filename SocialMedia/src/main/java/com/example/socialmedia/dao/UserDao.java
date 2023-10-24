@@ -20,4 +20,6 @@ public interface UserDao {
     List<User> getByName(String name);
 
     Page<User> getAll(String username, Integer page, Integer limit);
+
+    void remove (Long id);
 }

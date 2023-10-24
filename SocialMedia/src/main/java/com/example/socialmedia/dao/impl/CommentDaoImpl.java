@@ -1,6 +1,5 @@
 package com.example.socialmedia.dao.impl;
 
-import com.example.socialmedia.config.SecurityConfig;
 import com.example.socialmedia.dao.CommentDao;
 import com.example.socialmedia.entity.Comment;
 import com.example.socialmedia.entity.Post;
@@ -21,7 +20,6 @@ import java.util.Date;
 public class CommentDaoImpl implements CommentDao {
     private final CommentRepository commentRepository;
     private final MessageSource messageSource;
-    private final SecurityConfig securityConfig;
 
     @Override
     public Comment add(Comment comment) {
@@ -53,5 +51,10 @@ public class CommentDaoImpl implements CommentDao {
     @Override
     public void remove(Long id) {
         commentRepository.deleteById(id);
+    }
+
+    @Override
+    public void removeByUserId(Long userId) {
+        commentRepository.deleteAllByUserId(userId);
     }
 }

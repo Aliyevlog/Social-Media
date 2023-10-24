@@ -1,8 +1,7 @@
 package com.example.socialmedia.service.impl;
 
 import com.example.socialmedia.config.SecurityConfig;
-import com.example.socialmedia.dao.FileDao;
-import com.example.socialmedia.dao.UserDao;
+import com.example.socialmedia.dao.*;
 import com.example.socialmedia.dto.request.UpdateUserRequest;
 import com.example.socialmedia.dto.request.UserRegisterRequest;
 import com.example.socialmedia.dto.response.FileResponse;
@@ -13,6 +12,7 @@ import com.example.socialmedia.entity.User;
 import com.example.socialmedia.exception.AlreadyExistException;
 import com.example.socialmedia.exception.NotFoundException;
 import com.example.socialmedia.mapper.UserMapper;
+import com.example.socialmedia.service.UserNotifierService;
 import com.example.socialmedia.service.UserService;
 import com.example.socialmedia.util.FileUtil;
 import lombok.RequiredArgsConstructor;
@@ -32,6 +32,12 @@ public class UserServiceImpl implements UserService {
     private final UserMapper userMapper;
     private final SecurityConfig securityConfig;
     private final FileDao fileDao;
+    private final CommentDao commentDao;
+    private final PostDao postDao;
+    private final FriendDao friendDao;
+    private final FriendRequestDao friendRequestDao;
+    private final LikeDao likeDao;
+    private final UserNotifierService userNotifierService;
 
     @Override
     public UserResponse register(UserRegisterRequest request) throws AlreadyExistException {
@@ -39,7 +45,10 @@ public class UserServiceImpl implements UserService {
         checkUsernameExist(user);
         checkEmailExist(user);
 
-        return userMapper.map(userDao.register(user));
+        UserResponse userResponse = userMapper.map(userDao.register(user));
+        userNotifierService.notifyRegister(user);
+
+        return userResponse;
     }
 
     @Override
@@ -110,6 +119,17 @@ public class UserServiceImpl implements UserService {
                 .name(user.getPicture().getName())
                 .type(user.getPicture().getType())
                 .build();
+    }
+
+    @Override
+    public void remove(Long id) {
+        commentDao.removeByUserId(id);
+        postDao.removeByUserId(id);
+        friendDao.removeByUserId(id);
+        friendRequestDao.removeByUserId(id);
+        likeDao.removeByUserId(id);
+
+        userDao.remove(id);
     }
 
     private void checkUsernameExist(User user) throws AlreadyExistException {
